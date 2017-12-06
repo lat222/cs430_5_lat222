@@ -188,38 +188,38 @@ function main() {
   transformation.appendChild(rotation);
 
   var linebreak = document.createElement('br');
-  transformation.appendChild(linebreak);
+  transformation.appendChild(linebreak); //0
 
 
   // scale scalar fields
   var scalar_x_text = document.createElement("label");
   scalar_x_text.innerHTML = "Scalar X: ";
-  transformation.appendChild(scalar_x_text);
+  transformation.appendChild(scalar_x_text); //1
   var scalar_x = document.createElement('input'); // Create Input Field for Name
   scalar_x.setAttribute("type", "text");
-  transformation.appendChild(scalar_x);
+  transformation.appendChild(scalar_x); //2
 
   var linebreak = document.createElement('br');
-  transformation.appendChild(linebreak);
+  transformation.appendChild(linebreak); //3
 
   var scalar_y_text = document.createElement("label");
   scalar_y_text.innerHTML = "Scalar Y: ";
-  transformation.appendChild(scalar_y_text);
+  transformation.appendChild(scalar_y_text); //4
   var scalar_y = document.createElement('input'); // Create Input Field for Name
   scalar_y.setAttribute("type", "text");
-  transformation.appendChild(scalar_y);
+  transformation.appendChild(scalar_y); //5
 
   var linebreak = document.createElement('br');
-  transformation.appendChild(linebreak);
+  transformation.appendChild(linebreak); //6
 
 
   // shear factor fields
   var horizontalText = document.createElement("label");
   horizontalText.innerHTML = "Horizontal Shear: ";
-  transformation.appendChild(horizontalText);
+  transformation.appendChild(horizontalText); //7
   var horizontal = document.createElement('input'); // Create Input Field for Name
   horizontal.setAttribute("type", "text");
-  transformation.appendChild(horizontal);
+  transformation.appendChild(horizontal); //8
 
   var linebreak = document.createElement('br');
   transformation.appendChild(linebreak);
@@ -237,6 +237,23 @@ function main() {
   var buttonTransform = document.createElement("button");
   buttonTransform.innerHTML = "Transform";
   transformation.appendChild(buttonTransform);
+
+  buttonTransform.onclick = function(){
+    var t_nums = []
+    var t_names = ["Transform X","Transform Y","Rotation Degrees","Scalar X", "Scalar Y","Horizontal Shear", "Vertical Shear"];
+    // TODO: Check out why for some reason the fields are in the first positions...
+    for(i=0; i<7; i++)
+    {
+      //alert(i + transformation[i].value);
+      if (transformation[i].value == "") {
+        t_nums.push(0.0); 
+      } else if(isNaN(transformation[i].value)) {
+          alert(t_names[i] + " Input not valid");
+      } else {
+          t_nums.push(parseFloat(transformation[i].value))
+      }
+    }
+  }
 
 }
 
