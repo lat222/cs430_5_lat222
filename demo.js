@@ -51,24 +51,31 @@ function loadProgram(gl) {
 
 function main() {
 
+  // create the buttons
   var buttonTranslate = document.createElement("button");
   buttonTranslate.innerHTML = "Translate";
-  var buttonTranslate = document.createElement("button");
-  buttonTranslate.innerHTML = "Translate";
-  var buttonTranslate = document.createElement("button");
-  buttonTranslate.innerHTML = "Translate";
-  var buttonTranslate = document.createElement("button");
-  buttonTranslate.innerHTML = "Translate";
-  // 2. Append somewhere
-  var body = document.getElementsByTagName("body")[0];
-  body.appendChild(buttonTranslate);
+  var buttonRotate = document.createElement("button");
+  buttonRotate.innerHTML = "Rotate";
+  var buttonScale = document.createElement("button");
+  buttonScale.innerHTML = "Scale";
+  var buttonShear = document.createElement("button");
+  buttonShear.innerHTML = "Shear";
 
-  // 3. Add event handler
-  buttonTranslate.addEventListener ("click", function() {
-    alert("did something");
-  });
+  // add the buttons to the page
+  document.body.appendChild(buttonTranslate);
+  document.body.appendChild(buttonRotate);
+  document.body.appendChild(buttonScale);
+  document.body.appendChild(buttonShear);
 
-  /*var canvas = document.getElementById("canvas");
+
+  // add event handler
+  buttonTranslate.onclick = function(){alert("Translate");};
+  buttonRotate.onclick = function(){alert("Rotate");};
+  buttonScale.onclick = function(){alert("Scale");};
+  buttonShear.onclick = function(){alert("Shear");};
+
+
+  var canvas = document.getElementById("canvas");
   var gl = canvas.getContext("webgl2");
 
   if (!gl) {
@@ -161,7 +168,7 @@ function main() {
     draw();
     requestAnimationFrame(render);
   }
-  requestAnimationFrame(render);*/
+  requestAnimationFrame(render);
 
 }
 
