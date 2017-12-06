@@ -51,30 +51,6 @@ function loadProgram(gl) {
 
 function main() {
 
-  // create the buttons
-  var buttonTranslate = document.createElement("button");
-  buttonTranslate.innerHTML = "Translate";
-  var buttonRotate = document.createElement("button");
-  buttonRotate.innerHTML = "Rotate";
-  var buttonScale = document.createElement("button");
-  buttonScale.innerHTML = "Scale";
-  var buttonShear = document.createElement("button");
-  buttonShear.innerHTML = "Shear";
-
-  // add the buttons to the page
-  document.body.appendChild(buttonTranslate);
-  document.body.appendChild(buttonRotate);
-  document.body.appendChild(buttonScale);
-  document.body.appendChild(buttonShear);
-
-
-  // add event handler
-  buttonTranslate.onclick = function(){alert("Translate");};
-  buttonRotate.onclick = function(){alert("Rotate");};
-  buttonScale.onclick = function(){alert("Scale");};
-  buttonShear.onclick = function(){alert("Shear");};
-
-
   var canvas = document.getElementById("canvas");
   var gl = canvas.getContext("webgl2");
 
@@ -169,6 +145,98 @@ function main() {
     requestAnimationFrame(render);
   }
   requestAnimationFrame(render);
+
+  // create a form
+  var transformation = document.createElement("form");
+  transformation.setAttribute('action',"");
+  transformation.setAttribute('value',"Submit");
+  document.body.appendChild(transformation);
+
+  var heading = document.createElement('h5'); // Heading of Form
+  heading.innerHTML = "Fill in a field to transform the image. Empty fields will be treated as 0.";
+  transformation.appendChild(heading);
+
+
+  // transformation x and y fields
+  var x_text = document.createElement("label");
+  x_text.innerHTML = "Transform X: ";
+  transformation.appendChild(x_text);
+  var x = document.createElement('input'); // Create Input Field for Name
+  x.setAttribute("type", "text");
+  transformation.appendChild(x);
+
+  var linebreak = document.createElement('br');
+  transformation.appendChild(linebreak);
+
+  var y_text = document.createElement("label");
+  y_text.innerHTML = "Transform Y: ";
+  transformation.appendChild(y_text);
+  var y = document.createElement('input'); // Create Input Field for Name
+  y.setAttribute("type", "text");
+  transformation.appendChild(y);
+
+  var linebreak = document.createElement('br');
+  transformation.appendChild(linebreak);
+
+
+  // rotation degree field
+  var degree_text = document.createElement("label");
+  degree_text.innerHTML = "Rotation Degrees: ";
+  transformation.appendChild(degree_text);
+  var rotation = document.createElement('input'); // Create Input Field for Name
+  rotation.setAttribute("type", "text");
+  transformation.appendChild(rotation);
+
+  var linebreak = document.createElement('br');
+  transformation.appendChild(linebreak);
+
+
+  // scale scalar fields
+  var scalar_x_text = document.createElement("label");
+  scalar_x_text.innerHTML = "Scalar X: ";
+  transformation.appendChild(scalar_x_text);
+  var scalar_x = document.createElement('input'); // Create Input Field for Name
+  scalar_x.setAttribute("type", "text");
+  transformation.appendChild(scalar_x);
+
+  var linebreak = document.createElement('br');
+  transformation.appendChild(linebreak);
+
+  var scalar_y_text = document.createElement("label");
+  scalar_y_text.innerHTML = "Scalar Y: ";
+  transformation.appendChild(scalar_y_text);
+  var scalar_y = document.createElement('input'); // Create Input Field for Name
+  scalar_y.setAttribute("type", "text");
+  transformation.appendChild(scalar_y);
+
+  var linebreak = document.createElement('br');
+  transformation.appendChild(linebreak);
+
+
+  // shear factor fields
+  var horizontalText = document.createElement("label");
+  horizontalText.innerHTML = "Horizontal Shear: ";
+  transformation.appendChild(horizontalText);
+  var horizontal = document.createElement('input'); // Create Input Field for Name
+  horizontal.setAttribute("type", "text");
+  transformation.appendChild(horizontal);
+
+  var linebreak = document.createElement('br');
+  transformation.appendChild(linebreak);
+
+  var verticalText = document.createElement("label");
+  verticalText.innerHTML = "Vertical Shear: ";
+  transformation.appendChild(verticalText);
+  var vertical = document.createElement('input'); // Create Input Field for Name
+  vertical.setAttribute("type", "text");
+  transformation.appendChild(vertical);
+
+  var linebreak = document.createElement('br');
+  transformation.appendChild(linebreak);
+  
+  var buttonTransform = document.createElement("button");
+  buttonTransform.innerHTML = "Transform";
+  transformation.appendChild(buttonTransform);
 
 }
 
