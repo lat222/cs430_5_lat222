@@ -8,14 +8,10 @@ var vertexShaderSource = `#version 300 es
 in vec4 a_position;
 in vec2 a_texcoord;
 
-uniform mat4 mWorld;
-uniform mat4 mView;
-uniform mat4 mProj;
-
 out vec2 v_texcoord;
 
 void main() {
-  gl_Position = mProj * mView * mWorld * a_position;
+  gl_Position = a_position;
   v_texcoord = a_texcoord;
 }
 `;
@@ -36,6 +32,79 @@ void main() {
    outColor = texture(u_texture, v_texcoord);
 }
 `;
+
+var transformationMatrix = [
+    1.0,0.0,0.0,
+    0.0,1.0,0.0,
+    0.0,0.0,1.0,
+    0.0,0.0,0.0
+  ];
+
+ function transform(type)
+  {
+    switch (type){
+      // Translations
+      case 1:
+        transformationMatrix = [
+            1.0,0.0,1.0,
+            0.0,1.0,0.0
+        ];
+        break;
+      case 2:
+        transformationMatrix = [
+            1.0,0.0,1.0,
+            0.0,1.0,0.0,
+        ];
+        break;
+      case 3:
+        transformationMatrix = [
+            1.0,0.0,0.0,
+            0.0,1.0,1.0,
+        ];
+        break;
+      case 4:
+        transformationMatrix = [
+            1.0,0.0,0.0,
+            0.0,1.0,-1.0,
+        ];
+        break;
+      // rotation
+      case 5:
+        transformationMatrix = [
+        ];
+        break;
+      case 6:
+        transformationMatrix = [
+        ];
+        break;
+      // scale
+      case 7:
+        transformationMatrix = [
+            2.0,0.0,
+            0.0,2.0,
+        ];
+        break;
+      case 8:
+        transformationMatrix = [
+            0.5,0.0,
+            0.0,0.5,
+        ];
+        break;
+      // shear
+      case 9:
+        transformationMatrix = [
+            1.0,1.0,
+            0.0,1.0,
+        ];
+        break;
+      case 10:
+        transformationMatrix = [
+            1.0,0.0,
+            1.0,1.0,
+        ];
+        break;
+    }
+  }
 
 function loadShader(gl, shaderSource, shaderType) {
   var shader = gl.createShader(shaderType);
@@ -109,7 +178,7 @@ function main() {
   gl.vertexAttribPointer(
       positionLocation, 2, gl.FLOAT, false, 0, 0);
 
-  var texcoords = [
+  var texcoords = [ 
     0, 0,
     0, 1,
     1, 0,
@@ -167,122 +236,22 @@ function main() {
   }
 
   function render(time) {
+    // transform the positions here...
+    transformedPositions = [];
+
+    // AND then save them so they can be accessed by the draw method
+    // chunk of memory on CPU for Graphics Card
+    var positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(transformedPositions), gl.STATIC_DRAW);
+
+    // enable the attribute for use
+    gl.enableVertexAttribArray(positionLocation);
+
     draw();
     requestAnimationFrame(render);
   }
   requestAnimationFrame(render);
-
-  // create a form
-  var transformation = document.createElement("form");
-  transformation.setAttribute('action',"");
-  transformation.setAttribute('value',"Submit");
-  document.body.appendChild(transformation);
-
-  var heading = document.createElement('h5'); // Heading of Form
-  heading.innerHTML = "Fill in a field to transform the image. Empty fields will be treated as 0.";
-  transformation.appendChild(heading);
-
-
-  // transformation x and y fields
-  var x_text = document.createElement("label");
-  x_text.innerHTML = "Transform X: ";
-  transformation.appendChild(x_text);
-  var x = document.createElement('input'); // Create Input Field for Name
-  x.setAttribute("type", "text");
-  transformation.appendChild(x);
-
-  var linebreak = document.createElement('br');
-  transformation.appendChild(linebreak);
-
-  var y_text = document.createElement("label");
-  y_text.innerHTML = "Transform Y: ";
-  transformation.appendChild(y_text);
-  var y = document.createElement('input'); // Create Input Field for Name
-  y.setAttribute("type", "text");
-  transformation.appendChild(y);
-
-  var linebreak = document.createElement('br');
-  transformation.appendChild(linebreak);
-
-
-  // rotation degree field
-  var degree_text = document.createElement("label");
-  degree_text.innerHTML = "Rotation Degrees: ";
-  transformation.appendChild(degree_text);
-  var rotation = document.createElement('input'); // Create Input Field for Name
-  rotation.setAttribute("type", "text");
-  transformation.appendChild(rotation);
-
-  var linebreak = document.createElement('br');
-  transformation.appendChild(linebreak); //0
-
-
-  // scale scalar fields
-  var scalar_x_text = document.createElement("label");
-  scalar_x_text.innerHTML = "Scalar X: ";
-  transformation.appendChild(scalar_x_text); //1
-  var scalar_x = document.createElement('input'); // Create Input Field for Name
-  scalar_x.setAttribute("type", "text");
-  transformation.appendChild(scalar_x); //2
-
-  var linebreak = document.createElement('br');
-  transformation.appendChild(linebreak); //3
-
-  var scalar_y_text = document.createElement("label");
-  scalar_y_text.innerHTML = "Scalar Y: ";
-  transformation.appendChild(scalar_y_text); //4
-  var scalar_y = document.createElement('input'); // Create Input Field for Name
-  scalar_y.setAttribute("type", "text");
-  transformation.appendChild(scalar_y); //5
-
-  var linebreak = document.createElement('br');
-  transformation.appendChild(linebreak); //6
-
-
-  // shear factor fields
-  var horizontalText = document.createElement("label");
-  horizontalText.innerHTML = "Horizontal Shear: ";
-  transformation.appendChild(horizontalText); //7
-  var horizontal = document.createElement('input'); // Create Input Field for Name
-  horizontal.setAttribute("type", "text");
-  transformation.appendChild(horizontal); //8
-
-  var linebreak = document.createElement('br');
-  transformation.appendChild(linebreak);
-
-  var verticalText = document.createElement("label");
-  verticalText.innerHTML = "Vertical Shear: ";
-  transformation.appendChild(verticalText);
-  var vertical = document.createElement('input'); // Create Input Field for Name
-  vertical.setAttribute("type", "text");
-  transformation.appendChild(vertical);
-
-  var linebreak = document.createElement('br');
-  transformation.appendChild(linebreak);
-  
-  var buttonTransform = document.createElement("button");
-  buttonTransform.innerHTML = "Transform";
-  transformation.appendChild(buttonTransform);
-
-  buttonTransform.onclick = function(){
-    var t = []
-    var t_names = ["Transform X","Transform Y","Rotation Degrees","Scalar X", "Scalar Y","Horizontal Shear", "Vertical Shear"];
-    // TODO: Check out why for some reason the fields are in the first positions...
-    for(i=0; i<7; i++)
-    {
-      //alert(i + transformation[i].value);
-      if (transformation[i].value == "") {
-        t.push(0.0); 
-      } else if(isNaN(transformation[i].value)) {
-          alert(t_names[i] + " Input not valid");
-          return;
-      } else {
-          t.push(parseFloat(transformation[i].value))
-      }
-    }
-    // TODO: requestAnimationForm()
-    //canvas.style.transform = "translate(t[0],t[1]) rotate(t[2]) scale(t[3],t[4]) skew(t[5],t[6])";
-  }
 
 }
 
