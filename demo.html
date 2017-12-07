@@ -1,6 +1,7 @@
 <html>
 	<head><title>Image Viewer</title></head>
 	<body>
+		<div align = "center">
 		<canvas id="canvas" width="500" height="500" style="border:1px solid #000000;"></canvas>
 		<!--Want to make sure this runs after the canvas-->
 		<script src="demo.js"></script>
@@ -10,27 +11,29 @@
 				<td align = "center"><b>Rotation</b></td>
 				<td colspan="2" align = "center"><b>Scale</b></td>
 				<td colspan="2" align = "center"><b>Shear</b></td>
-			<tr>
-				<td colspan="2" align = "center"><button onclick="transform('TYU')">Y Up</button></td>
-				<td><button onclick="transform('RR')">Rotate Right</button></td>
-				<td colspan="2" align = "center"><button onclick="transform('SY+')">Scale Y+</button></td>
-				<td colspan="2" align = "center"><button onclick="transform('SYU')">Shear Y Up</button></td>
 			</tr>
 			<tr>
-				<td><button onclick="transform('TXL')">X Left</button></td>
-				<td><button onclick="transform('TXR')">X Right</button></td>
-				<td><button onclick="transform('RL')">Rotate Left</button></td>
-				<td><button onclick="transform('SX-')">Scale X-</button></td>
-				<td><button onclick="transform('SX+')">Scale X+</button></td>
-				<td><button onclick="transform('SXL')">Shear X Left</button></td>
-				<td><button onclick="transform('SXR')">Shear X Right</button></td>
+				<td colspan="2" align = "center"><button onclick="transform('TYU')">Up</button></td>
+				<td align = "center"><button onclick="transform('RR')">Right</button></td>
+				<td colspan="2" align = "center"><button onclick="transform('SY+')">Y+</button></td>
+				<td colspan="2" align = "center"><button onclick="transform('SYU')">Up</button></td>
 			</tr>
 			<tr>
-				<td colspan="2" align = "center"><button onclick="transform('TYD')">Y Down</button></td>
+				<td><button onclick="transform('TXL')">Left</button></td>
+				<td><button onclick="transform('TXR')">Right</button></td>
+				<td align = "center"><button onclick="transform('RL')">Left</button></td>
+				<td><button onclick="transform('SX-')">X-</button></td>
+				<td><button onclick="transform('SX+')">X+</button></td>
+				<td><button onclick="transform('SXL')">Left</button></td>
+				<td><button onclick="transform('SXR')">Right</button></td>
+			</tr>
+			<tr>
+				<td colspan="2" align = "center"><button onclick="transform('TYD')">Down</button></td>
 				<td></td>
-				<td colspan="2" align = "center"><button onclick="transform('SY-')">Scale Y-</button></td>
-				<td colspan="2" align = "center"><button onclick="transform('SYD')">Shear Y Down</button></td>
+				<td colspan="2" align = "center"><button onclick="transform('SY-')">Y-</button></td>
+				<td colspan="2" align = "center"><button onclick="transform('SYD')">Down</button></td>
 			</tr>
 		</table>
+		</div>
 	</body>
 </html>
