@@ -52,6 +52,8 @@ function loadProgram(gl) {
 function main() {
 
   var canvas = document.getElementById("canvas");
+  // interface provides the OpenGL ES 3.0 rendering context for the
+  // drawing surface of an HTML <canvas> element.
   var gl = canvas.getContext("webgl2");
 
   if (!gl) {
@@ -239,20 +241,22 @@ function main() {
   transformation.appendChild(buttonTransform);
 
   buttonTransform.onclick = function(){
-    var t_nums = []
+    var t = []
     var t_names = ["Transform X","Transform Y","Rotation Degrees","Scalar X", "Scalar Y","Horizontal Shear", "Vertical Shear"];
     // TODO: Check out why for some reason the fields are in the first positions...
     for(i=0; i<7; i++)
     {
       //alert(i + transformation[i].value);
       if (transformation[i].value == "") {
-        t_nums.push(0.0); 
+        t.push(0.0); 
       } else if(isNaN(transformation[i].value)) {
           alert(t_names[i] + " Input not valid");
+          return;
       } else {
-          t_nums.push(parseFloat(transformation[i].value))
+          t.push(parseFloat(transformation[i].value))
       }
     }
+    canvas.style.transform = "translate(t[0],t[1]) rotate(t[2]) scale(t[3],t[4]) skew(t[5],t[6])";
   }
 
 }
