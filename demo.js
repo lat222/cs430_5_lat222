@@ -39,86 +39,94 @@ var identityMatrix = [
     0.0,0.0,1.0,
 ];
 
-var transformationMatrix = [
-    1.0,0.0,0.0,
-    0.0,1.0,0.0,
-    0.0,0.0,1.0,
-];
+var transformationMatrix = identityMatrix;
 
  function transform(type)
   {
     switch (type){
       // Translations
-      case 1:
+      case 'TXL':
         transformationMatrix = [
             1.0,0.0,-0.1,
             0.0,1.0,0.0
         ];
         break;
-      case 2:
+      case 'TXR':
         transformationMatrix = [
             1.0,0.0,0.1,
             0.0,1.0,0.0,
         ];
         break;
-      case 3:
+      case 'TYU':
         transformationMatrix = [
             1.0,0.0,0.0,
             0.0,1.0,0.1,
         ];
         break;
-      case 4:
+      case 'TYD':
         transformationMatrix = [
             1.0,0.0,0.0,
             0.0,1.0,-0.1,
         ];
         break;
-      // rotation
-      case 5:
+      // rotation about the z-axis
+      case 'RR':
         transformationMatrix = [
-          1.0,0.0,0.0,
-          0.0,1.0,0.0,
+          Math.cos(Math.PI/12),-Math.sin(Math.PI/12),0.0,
+          Math.sin(Math.PI/12),Math.cos(Math.PI/12),0.0,
         ];
         break;
-      case 6:
+      case 'RL':
         transformationMatrix = [
-          1.0,0.0,0.0,
-          0.0,1.0,0.0,
+          Math.cos(-Math.PI/12),Math.sin(Math.PI/12),0.0,
+          Math.sin(-Math.PI/12),Math.cos(-Math.PI/12),0.0,
         ];
         break;
       // scale
-      case 7:
+      case 'SX+':
         transformationMatrix = [
             2.0,0.0,0.0,
+            0.0,1.0,0.0,
+        ];
+        break;
+      case 'SX-':
+        transformationMatrix = [
+            0.5,0.0,0.0,
+            0.0,1.0,0.0,
+        ];
+        break;
+      case 'SY+':
+        transformationMatrix = [
+            1.0,0.0,0.0,
             0.0,2.0,0.0,
         ];
         break;
-      case 8:
+      case 'SY-':
         transformationMatrix = [
-            0.5,0.0,0.0,
+            1.0,0.0,0.0,
             0.0,0.5,0.0,
         ];
         break;
       // shear
-      case 9:
+      case 'SXR':
         transformationMatrix = [
             1.0,0.1,0.0,
             0.0,1.0,0.0
         ];
         break;
-      case 10:
+      case 'SYU':
         transformationMatrix = [
             1.0,0.0,0.0,
             0.1,1.0,0.0,
         ];
         break;
-      case 11:
+      case 'SYD':
         transformationMatrix = [
             1.0,0.0,0.0,
             -0.1,1.0,0.0,
         ];
         break;
-      case 12:
+      case 'SXL':
         transformationMatrix = [
             1.0,-0.1,0.0,
             0.0,1.0,0.0,
@@ -233,7 +241,7 @@ function main() {
     return tex;
   }
 
-  var image = loadTexture('stone1.png');
+  var image = loadTexture('explosion.png');
 
   function draw() {
     // makes sure that gl knows where to paint to
@@ -257,10 +265,12 @@ function main() {
   }
 
   function render(time) {
-    // transform the positions here...
+    // transform the positions here because we have a new transformation matrix
     if(transformationMatrix.length != 9)
     { 
+      // create a place to store the new positions
       var transformedPositions = []
+      // transform the positions matrix based on the transformationMatrix and store them
       transformedPositions.push(positions[0]*transformationMatrix[0]+positions[1]*transformationMatrix[1]+transformationMatrix[2]);
       transformedPositions.push(positions[0]*transformationMatrix[3]+positions[1]*transformationMatrix[4]+transformationMatrix[5]);
       transformedPositions.push(positions[2]*transformationMatrix[0]+positions[3]*transformationMatrix[1]+transformationMatrix[2]);
@@ -273,24 +283,17 @@ function main() {
       transformedPositions.push(positions[8]*transformationMatrix[3]+positions[9]*transformationMatrix[4]+transformationMatrix[5]);
       transformedPositions.push(positions[10]*transformationMatrix[0]+positions[11]*transformationMatrix[1]+transformationMatrix[2]);
       transformedPositions.push(positions[10]*transformationMatrix[3]+positions[11]*transformationMatrix[4]+transformationMatrix[5]);
+      // positions should now be set to transformedPositions so that the new positions are stored
       positions = transformedPositions;
-      console.log("[" + positions[0] + ", " + positions[1] + ", " 
-      + positions[2] + ", " + positions[3] + ", "
-      + positions[4] + ", " + positions[5] + ", "
-      + positions[6] + ", " + positions[7] + ", "
-      + positions[8] + ", " + positions[9] + ", "
-      + positions[0] + ", " + positions[0] + ",]\n");
+
+      // Keeps this from being rendered until another button has been pushed
       transformationMatrix = identityMatrix;
 
-      // AND then save the transformation so they can be accessed by the draw method
-      // chunk of memory on CPU for Graphics Card
+      // AND then save the transformation to the positionBuffer so they can be accessed by the draw method
       positionBuffer = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
-
-      // enable the attribute for use
       gl.enableVertexAttribArray(positionLocation);
-
       gl.vertexAttribPointer(
         positionLocation, 2, gl.FLOAT, false, 0, 0);
     }
