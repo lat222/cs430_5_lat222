@@ -33,6 +33,12 @@ void main() {
 }
 `;
 
+var identityMatrix = [
+    1.0,0.0,0.0,
+    0.0,1.0,0.0,
+    0.0,0.0,1.0,
+];
+
 var transformationMatrix = [
     1.0,0.0,0.0,
     0.0,1.0,0.0,
@@ -45,26 +51,26 @@ var transformationMatrix = [
       // Translations
       case 1:
         transformationMatrix = [
-            1.0,0.0,1.0,
+            1.0,0.0,-0.1,
             0.0,1.0,0.0
         ];
         break;
       case 2:
         transformationMatrix = [
-            1.0,0.0,-1.0,
+            1.0,0.0,0.1,
             0.0,1.0,0.0,
         ];
         break;
       case 3:
         transformationMatrix = [
             1.0,0.0,0.0,
-            0.0,1.0,1.0,
+            0.0,1.0,0.1,
         ];
         break;
       case 4:
         transformationMatrix = [
             1.0,0.0,0.0,
-            0.0,1.0,-1.0,
+            0.0,1.0,-0.1,
         ];
         break;
       // rotation
@@ -104,6 +110,18 @@ var transformationMatrix = [
         transformationMatrix = [
             1.0,0.0,0.0,
             1.0,1.0,0.0,
+        ];
+        break;
+      case 11:
+        transformationMatrix = [
+            1.0,0.0,0.0,
+            -1.0,1.0,0.0,
+        ];
+        break;
+      case 12:
+        transformationMatrix = [
+            1.0,-1.0,0.0,
+            0.0,1.0,0.0,
         ];
         break;
     }
@@ -240,40 +258,42 @@ function main() {
 
   function render(time) {
     // transform the positions here...
-    transformedPositions = [];
-    transformedPositions.push(positions[0]*transformationMatrix[0]+positions[1]*transformationMatrix[1]+transformationMatrix[2]);
-    transformedPositions.push(positions[0]*transformationMatrix[3]+positions[1]*transformationMatrix[4]+transformationMatrix[5]);
-    transformedPositions.push(positions[2]*transformationMatrix[0]+positions[3]*transformationMatrix[1]+transformationMatrix[2]);
-    transformedPositions.push(positions[2]*transformationMatrix[3]+positions[3]*transformationMatrix[4]+transformationMatrix[5]);
-    transformedPositions.push(positions[4]*transformationMatrix[0]+positions[5]*transformationMatrix[1]+transformationMatrix[2]);
-    transformedPositions.push(positions[4]*transformationMatrix[3]+positions[5]*transformationMatrix[4]+transformationMatrix[5]);
-    transformedPositions.push(positions[6]*transformationMatrix[0]+positions[7]*transformationMatrix[1]+transformationMatrix[2]);
-    transformedPositions.push(positions[6]*transformationMatrix[3]+positions[7]*transformationMatrix[4]+transformationMatrix[5]);
-    transformedPositions.push(positions[8]*transformationMatrix[0]+positions[9]*transformationMatrix[1]+transformationMatrix[2]);
-    transformedPositions.push(positions[8]*transformationMatrix[3]+positions[9]*transformationMatrix[4]+transformationMatrix[5]);
-    transformedPositions.push(positions[10]*transformationMatrix[0]+positions[11]*transformationMatrix[1]+transformationMatrix[2]);
-    transformedPositions.push(positions[10]*transformationMatrix[3]+positions[11]*transformationMatrix[4]+transformationMatrix[5]);
-
     if(transformationMatrix.length != 9)
-    { console.log("[" + transformedPositions[0] + ", " + transformedPositions[1] + ", " 
-      + transformedPositions[2] + ", " + transformedPositions[3] + ", "
-      + transformedPositions[4] + ", " + transformedPositions[5] + ", "
-      + transformedPositions[6] + ", " + transformedPositions[7] + ", "
-      + transformedPositions[8] + ", " + transformedPositions[9] + ", "
-      + transformedPositions[0] + ", " + transformedPositions[0] + ",]\n");
+    { 
+      var transformedPositions = []
+      transformedPositions.push(positions[0]*transformationMatrix[0]+positions[1]*transformationMatrix[1]+transformationMatrix[2]);
+      transformedPositions.push(positions[0]*transformationMatrix[3]+positions[1]*transformationMatrix[4]+transformationMatrix[5]);
+      transformedPositions.push(positions[2]*transformationMatrix[0]+positions[3]*transformationMatrix[1]+transformationMatrix[2]);
+      transformedPositions.push(positions[2]*transformationMatrix[3]+positions[3]*transformationMatrix[4]+transformationMatrix[5]);
+      transformedPositions.push(positions[4]*transformationMatrix[0]+positions[5]*transformationMatrix[1]+transformationMatrix[2]);
+      transformedPositions.push(positions[4]*transformationMatrix[3]+positions[5]*transformationMatrix[4]+transformationMatrix[5]);
+      transformedPositions.push(positions[6]*transformationMatrix[0]+positions[7]*transformationMatrix[1]+transformationMatrix[2]);
+      transformedPositions.push(positions[6]*transformationMatrix[3]+positions[7]*transformationMatrix[4]+transformationMatrix[5]);
+      transformedPositions.push(positions[8]*transformationMatrix[0]+positions[9]*transformationMatrix[1]+transformationMatrix[2]);
+      transformedPositions.push(positions[8]*transformationMatrix[3]+positions[9]*transformationMatrix[4]+transformationMatrix[5]);
+      transformedPositions.push(positions[10]*transformationMatrix[0]+positions[11]*transformationMatrix[1]+transformationMatrix[2]);
+      transformedPositions.push(positions[10]*transformationMatrix[3]+positions[11]*transformationMatrix[4]+transformationMatrix[5]);
+      positions = transformedPositions;
+      console.log("[" + positions[0] + ", " + positions[1] + ", " 
+      + positions[2] + ", " + positions[3] + ", "
+      + positions[4] + ", " + positions[5] + ", "
+      + positions[6] + ", " + positions[7] + ", "
+      + positions[8] + ", " + positions[9] + ", "
+      + positions[0] + ", " + positions[0] + ",]\n");
+      transformationMatrix = identityMatrix;
+
+      // AND then save the transformation so they can be accessed by the draw method
+      // chunk of memory on CPU for Graphics Card
+      positionBuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+
+      // enable the attribute for use
+      gl.enableVertexAttribArray(positionLocation);
+
+      gl.vertexAttribPointer(
+        positionLocation, 2, gl.FLOAT, false, 0, 0);
     }
-
-    // AND then save them so they can be accessed by the draw method
-    // chunk of memory on CPU for Graphics Card
-    positionBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(transformedPositions), gl.STATIC_DRAW);
-
-    // enable the attribute for use
-    gl.enableVertexAttribArray(positionLocation);
-
-    gl.vertexAttribPointer(
-      positionLocation, 2, gl.FLOAT, false, 0, 0);
 
     draw();
     requestAnimationFrame(render);
