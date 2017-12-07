@@ -70,13 +70,13 @@ var transformationMatrix = identityMatrix;
         ];
         break;
       // rotation about the z-axis
-      case 'RR':
+      case 'RL':
         transformationMatrix = [
           Math.cos(Math.PI/12),-Math.sin(Math.PI/12),0.0,
           Math.sin(Math.PI/12),Math.cos(Math.PI/12),0.0,
         ];
         break;
-      case 'RL':
+      case 'RR':
         transformationMatrix = [
           Math.cos(-Math.PI/12),Math.sin(Math.PI/12),0.0,
           Math.sin(-Math.PI/12),Math.cos(-Math.PI/12),0.0,
@@ -229,7 +229,7 @@ function main() {
     gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
                   new Uint8Array([0, 0, 255, 255]));
-
+    
     var img = new Image();
     img.addEventListener('load', function() {
       gl.bindTexture(gl.TEXTURE_2D, tex);
@@ -241,7 +241,7 @@ function main() {
     return tex;
   }
 
-  var image = loadTexture('explosion.png');
+  var image = loadTexture('crate.png');
 
   function draw() {
     // makes sure that gl knows where to paint to
