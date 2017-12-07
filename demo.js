@@ -33,100 +33,105 @@ void main() {
 }
 `;
 
+// identity matrix is just here to keep transformations from happening again and again
 var identityMatrix = [
     1.0,0.0,0.0,
     0.0,1.0,0.0,
     0.0,0.0,1.0,
 ];
 
+// set the transformationMatrix to the identityMatrix so that the positions don't change 
 var transformationMatrix = identityMatrix;
 
- function transform(type)
+
+// this is the function called by the buttons, they reset the transformation matrix 
+// in order to change the positions of the triangle.
+function transform(type)
   {
     switch (type){
       // Translations
-      case 'TXL':
+      case 'TXL': //translation X left
         transformationMatrix = [
             1.0,0.0,-0.1,
             0.0,1.0,0.0
         ];
         break;
-      case 'TXR':
+      case 'TXR': //translation X right
         transformationMatrix = [
             1.0,0.0,0.1,
             0.0,1.0,0.0,
         ];
         break;
-      case 'TYU':
+      case 'TYU': //translation Y up
         transformationMatrix = [
             1.0,0.0,0.0,
             0.0,1.0,0.1,
         ];
         break;
-      case 'TYD':
+      case 'TYD': //translation Y down
         transformationMatrix = [
             1.0,0.0,0.0,
             0.0,1.0,-0.1,
         ];
         break;
       // rotation about the z-axis
-      case 'RL':
+      case 'RL': //rotate left
         transformationMatrix = [
           Math.cos(Math.PI/12),-Math.sin(Math.PI/12),0.0,
           Math.sin(Math.PI/12),Math.cos(Math.PI/12),0.0,
         ];
         break;
-      case 'RR':
+      case 'RR': //rotate right
         transformationMatrix = [
           Math.cos(-Math.PI/12),Math.sin(Math.PI/12),0.0,
           Math.sin(-Math.PI/12),Math.cos(-Math.PI/12),0.0,
         ];
         break;
       // scale
-      case 'SX+':
+      case 'SX+': // scale x larger
         transformationMatrix = [
             2.0,0.0,0.0,
             0.0,1.0,0.0,
         ];
         break;
-      case 'SX-':
+      case 'SX-': // scale x smaller
         transformationMatrix = [
             0.5,0.0,0.0,
             0.0,1.0,0.0,
         ];
         break;
-      case 'SY+':
+      case 'SY+': // scale y larger
         transformationMatrix = [
             1.0,0.0,0.0,
             0.0,2.0,0.0,
         ];
         break;
-      case 'SY-':
+      case 'SY-': // scale y smaller
         transformationMatrix = [
             1.0,0.0,0.0,
             0.0,0.5,0.0,
         ];
         break;
       // shear
-      case 'SXR':
+      case 'SXR': // shear x right
         transformationMatrix = [
             1.0,0.1,0.0,
             0.0,1.0,0.0
         ];
         break;
-      case 'SYU':
+      case 'SYU': // shear y up
         transformationMatrix = [
             1.0,0.0,0.0,
             0.1,1.0,0.0,
         ];
         break;
-      case 'SYD':
+      case 'SYD': // shear y down
         transformationMatrix = [
             1.0,0.0,0.0,
             -0.1,1.0,0.0,
         ];
         break;
-      case 'SXL':
+      case 'SXL': // shear x left
         transformationMatrix = [
             1.0,-0.1,0.0,
             0.0,1.0,0.0,
@@ -229,7 +234,7 @@ function main() {
     gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
                   new Uint8Array([0, 0, 255, 255]));
-    
+
     var img = new Image();
     img.addEventListener('load', function() {
       gl.bindTexture(gl.TEXTURE_2D, tex);
@@ -271,18 +276,11 @@ function main() {
       // create a place to store the new positions
       var transformedPositions = []
       // transform the positions matrix based on the transformationMatrix and store them
-      transformedPositions.push(positions[0]*transformationMatrix[0]+positions[1]*transformationMatrix[1]+transformationMatrix[2]);
-      transformedPositions.push(positions[0]*transformationMatrix[3]+positions[1]*transformationMatrix[4]+transformationMatrix[5]);
-      transformedPositions.push(positions[2]*transformationMatrix[0]+positions[3]*transformationMatrix[1]+transformationMatrix[2]);
-      transformedPositions.push(positions[2]*transformationMatrix[3]+positions[3]*transformationMatrix[4]+transformationMatrix[5]);
-      transformedPositions.push(positions[4]*transformationMatrix[0]+positions[5]*transformationMatrix[1]+transformationMatrix[2]);
-      transformedPositions.push(positions[4]*transformationMatrix[3]+positions[5]*transformationMatrix[4]+transformationMatrix[5]);
-      transformedPositions.push(positions[6]*transformationMatrix[0]+positions[7]*transformationMatrix[1]+transformationMatrix[2]);
-      transformedPositions.push(positions[6]*transformationMatrix[3]+positions[7]*transformationMatrix[4]+transformationMatrix[5]);
-      transformedPositions.push(positions[8]*transformationMatrix[0]+positions[9]*transformationMatrix[1]+transformationMatrix[2]);
-      transformedPositions.push(positions[8]*transformationMatrix[3]+positions[9]*transformationMatrix[4]+transformationMatrix[5]);
-      transformedPositions.push(positions[10]*transformationMatrix[0]+positions[11]*transformationMatrix[1]+transformationMatrix[2]);
-      transformedPositions.push(positions[10]*transformationMatrix[3]+positions[11]*transformationMatrix[4]+transformationMatrix[5]);
+      for(i = 0; i < 12; i+=2)
+      {
+        transformedPositions.push(positions[i]*transformationMatrix[0]+positions[i+1]*transformationMatrix[1]+transformationMatrix[2]);
+        transformedPositions.push(positions[i]*transformationMatrix[3]+positions[i+1]*transformationMatrix[4]+transformationMatrix[5]);
+      };
       // positions should now be set to transformedPositions so that the new positions are stored
       positions = transformedPositions;
 
