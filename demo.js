@@ -1,16 +1,28 @@
+// vertex shader
+/*Might look like this in javascript
+function vertexShader(a_position, a_textcoord){
+  return v_textcoord;}*/
+// gl_position sets up where on the rendering surface to draw that vertex
 var vertexShaderSource = `#version 300 es
 
 in vec4 a_position;
 in vec2 a_texcoord;
 
+uniform mat4 mWorld;
+uniform mat4 mView;
+uniform mat4 mProj;
+
 out vec2 v_texcoord;
 
 void main() {
-  gl_Position = a_position;
+  gl_Position = mProj * mView * mWorld * a_position;
   v_texcoord = a_texcoord;
 }
 `;
 
+// fragment shader
+// takes in v_texcoord from vertexShader
+// outputs ...
 var fragmentShaderSource = `#version 300 es
 precision mediump float;
 
@@ -51,17 +63,22 @@ function loadProgram(gl) {
 
 function main() {
 
+  // get the canvas
   var canvas = document.getElementById("canvas");
   // interface provides the OpenGL ES 3.0 rendering context for the
   // drawing surface of an HTML <canvas> element.
   var gl = canvas.getContext("webgl2");
 
   if (!gl) {
+    alert("Your browser does not support WebGL2");
     return;
   }
 
+  // creates shaders and program is the entire graphics pipeline???
   var program = loadProgram(gl);
 
+  // Create all the information that the graphics card will be using
+  // handle to attributes
   var positionLocation = gl.getAttribLocation(program, "a_position");
   var texcoordLocation = gl.getAttribLocation(program, "a_texcoord");
   var textureLocation = gl.getUniformLocation(program, "u_texture");
@@ -70,6 +87,7 @@ function main() {
 
   gl.bindVertexArray(vao);
 
+  // where the cube should be drawn based off of the six visible points
   var positions = [
     0, 0,
     0, 1,
@@ -78,12 +96,16 @@ function main() {
     0, 1,
     1, 1,
   ];
+  // chunk of memory on CPU for Graphics Card
   var positionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
+  // enable the attribute for use
   gl.enableVertexAttribArray(positionLocation);
 
+  // specifies the layout of the attribute
+  // attribute location, # elements per attribute, type of elements, normalized, size of vertex, offset
   gl.vertexAttribPointer(
       positionLocation, 2, gl.FLOAT, false, 0, 0);
 
@@ -124,9 +146,11 @@ function main() {
   var image = loadTexture('stone1.png');
 
   function draw() {
+    // makes sure that gl knows where to paint to
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
-    gl.clearColor(0, 0, 0, 0);
+    gl.clearColor(0, 0, 0, 0); // set up the color to paint with
+    // paints based on what is stored in the buffers
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     gl.useProgram(program);
@@ -256,7 +280,8 @@ function main() {
           t.push(parseFloat(transformation[i].value))
       }
     }
-    canvas.style.transform = "translate(t[0],t[1]) rotate(t[2]) scale(t[3],t[4]) skew(t[5],t[6])";
+    // TODO: requestAnimationForm()
+    //canvas.style.transform = "translate(t[0],t[1]) rotate(t[2]) scale(t[3],t[4]) skew(t[5],t[6])";
   }
 
 }
