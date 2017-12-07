@@ -102,25 +102,25 @@ var transformationMatrix = [
       // shear
       case 9:
         transformationMatrix = [
-            1.0,1.0,0.0,
+            1.0,0.1,0.0,
             0.0,1.0,0.0
         ];
         break;
       case 10:
         transformationMatrix = [
             1.0,0.0,0.0,
-            1.0,1.0,0.0,
+            0.1,1.0,0.0,
         ];
         break;
       case 11:
         transformationMatrix = [
             1.0,0.0,0.0,
-            -1.0,1.0,0.0,
+            -0.1,1.0,0.0,
         ];
         break;
       case 12:
         transformationMatrix = [
-            1.0,-1.0,0.0,
+            1.0,-0.1,0.0,
             0.0,1.0,0.0,
         ];
         break;
