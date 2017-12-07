@@ -37,8 +37,7 @@ var transformationMatrix = [
     1.0,0.0,0.0,
     0.0,1.0,0.0,
     0.0,0.0,1.0,
-    0.0,0.0,0.0
-  ];
+];
 
  function transform(type)
   {
@@ -52,7 +51,7 @@ var transformationMatrix = [
         break;
       case 2:
         transformationMatrix = [
-            1.0,0.0,1.0,
+            1.0,0.0,-1.0,
             0.0,1.0,0.0,
         ];
         break;
@@ -71,36 +70,40 @@ var transformationMatrix = [
       // rotation
       case 5:
         transformationMatrix = [
+          1.0,0.0,0.0,
+          0.0,1.0,0.0,
         ];
         break;
       case 6:
         transformationMatrix = [
+          1.0,0.0,0.0,
+          0.0,1.0,0.0,
         ];
         break;
       // scale
       case 7:
         transformationMatrix = [
-            2.0,0.0,
-            0.0,2.0,
+            2.0,0.0,0.0,
+            0.0,2.0,0.0,
         ];
         break;
       case 8:
         transformationMatrix = [
-            0.5,0.0,
-            0.0,0.5,
+            0.5,0.0,0.0,
+            0.0,0.5,0.0,
         ];
         break;
       // shear
       case 9:
         transformationMatrix = [
-            1.0,1.0,
-            0.0,1.0,
+            1.0,1.0,0.0,
+            0.0,1.0,0.0
         ];
         break;
       case 10:
         transformationMatrix = [
-            1.0,0.0,
-            1.0,1.0,
+            1.0,0.0,0.0,
+            1.0,1.0,0.0,
         ];
         break;
     }
@@ -238,15 +241,39 @@ function main() {
   function render(time) {
     // transform the positions here...
     transformedPositions = [];
+    transformedPositions.push(positions[0]*transformationMatrix[0]+positions[1]*transformationMatrix[1]+transformationMatrix[2]);
+    transformedPositions.push(positions[0]*transformationMatrix[3]+positions[1]*transformationMatrix[4]+transformationMatrix[5]);
+    transformedPositions.push(positions[2]*transformationMatrix[0]+positions[3]*transformationMatrix[1]+transformationMatrix[2]);
+    transformedPositions.push(positions[2]*transformationMatrix[3]+positions[3]*transformationMatrix[4]+transformationMatrix[5]);
+    transformedPositions.push(positions[4]*transformationMatrix[0]+positions[5]*transformationMatrix[1]+transformationMatrix[2]);
+    transformedPositions.push(positions[4]*transformationMatrix[3]+positions[5]*transformationMatrix[4]+transformationMatrix[5]);
+    transformedPositions.push(positions[6]*transformationMatrix[0]+positions[7]*transformationMatrix[1]+transformationMatrix[2]);
+    transformedPositions.push(positions[6]*transformationMatrix[3]+positions[7]*transformationMatrix[4]+transformationMatrix[5]);
+    transformedPositions.push(positions[8]*transformationMatrix[0]+positions[9]*transformationMatrix[1]+transformationMatrix[2]);
+    transformedPositions.push(positions[8]*transformationMatrix[3]+positions[9]*transformationMatrix[4]+transformationMatrix[5]);
+    transformedPositions.push(positions[10]*transformationMatrix[0]+positions[11]*transformationMatrix[1]+transformationMatrix[2]);
+    transformedPositions.push(positions[10]*transformationMatrix[3]+positions[11]*transformationMatrix[4]+transformationMatrix[5]);
+
+    if(transformationMatrix.length != 9)
+    { console.log("[" + transformedPositions[0] + ", " + transformedPositions[1] + ", " 
+      + transformedPositions[2] + ", " + transformedPositions[3] + ", "
+      + transformedPositions[4] + ", " + transformedPositions[5] + ", "
+      + transformedPositions[6] + ", " + transformedPositions[7] + ", "
+      + transformedPositions[8] + ", " + transformedPositions[9] + ", "
+      + transformedPositions[0] + ", " + transformedPositions[0] + ",]\n");
+    }
 
     // AND then save them so they can be accessed by the draw method
     // chunk of memory on CPU for Graphics Card
-    var positionBuffer = gl.createBuffer();
+    positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(transformedPositions), gl.STATIC_DRAW);
 
     // enable the attribute for use
     gl.enableVertexAttribArray(positionLocation);
+
+    gl.vertexAttribPointer(
+      positionLocation, 2, gl.FLOAT, false, 0, 0);
 
     draw();
     requestAnimationFrame(render);
